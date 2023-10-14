@@ -47,6 +47,24 @@ This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns. 
 ## How many aisles are there, and which aisles are the most items ordered from?
 
 ```{r}
+instacart |> 
+  select(aisle) |> 
+  distinct() |> 
+  count()
 
+instacart |> 
+  count(aisle)  |> 
+  arrange(desc(n)) |> 
+  pull(aisle) |> 
+  first() |> 
+  print()
 ```
+
+There are `r instacart |> select(aisle) |> distinct() |> count()` aisles, and the most items ordered from `r instacart |> count(aisle)  |> arrange(desc(n)) |> pull(aisle) |> first()` aisle.
+
+
+
+
+
+
 
