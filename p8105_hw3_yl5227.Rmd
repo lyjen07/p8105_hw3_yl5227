@@ -62,6 +62,22 @@ instacart |>
 
 There are `r instacart |> select(aisle) |> distinct() |> count()` aisles, and the most items ordered from `r instacart |> count(aisle)  |> arrange(desc(n)) |> pull(aisle) |> first()` aisle.
 
+## Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+
+```{r}
+instacart |> 
+  count(aisle) |> 
+  filter(n > 10000) |> 
+  mutate(aisle = fct_reorder(aisle, n)) |> 
+  ggplot(aes(x = aisle, y = n)) +
+  geom_point() +
+  labs(title = "Number of items ordered in each aisle") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+```
+
+The plot shows the number of items ordered in aisle with more than 10000 items ordered in an increasing order. The top two most popular items are fresh vegetables and fresh fruits.
+
+## Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
 
 
