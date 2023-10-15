@@ -12,7 +12,7 @@ library(ggridges)
 library(patchwork)
 
 knitr::opts_chunk$set(
-  fig.width = 6,
+  fig.width = 8,
   fig.asp = .6,
   out.width = "90%"
 )
@@ -199,3 +199,29 @@ ggplot(brfss_excel,
 ```
 
 This plot shows the average data value over time within each state, limited to "Excellent" response. There are a total of `r length(unique(pull(brfss_excel, locationabbr)))` states observed. To make the plot more readable, the legends indicating `state` have been placed on the side of the plot, with the x-axis representing the `year`, and the y-axis representing the `average data value`. The `average data value` fluctuates by `year` for most states.
+
+*Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.*
+
+```{r}
+ny_2006_2010 =
+  brfss |>
+  filter(locationabbr == "NY", 
+         year %in% c(2006, 2010)) |>
+  separate(locationdesc, into = c("state", "county"), "-") |>
+  select(year, county, response, data_value) |>
+  ggplot(aes(x = response, y = data_value)) +
+  geom_boxplot() +
+  geom_point(aes(color = county)) +
+  facet_grid(~ year) +
+  labs(title = "Data Value distribution in Responses among NY locations (in 2006 and 2010)",
+       x = "Response",
+       y = "Data Value",
+       color = "County") +
+  theme_minimal()
+
+ny_2006_2010
+```
+
+`ny_2006_2010` is a plot that contains `brfss` that filters out only New York and years _2006_ or _2010_ data values. The above is a two panel plot showing, for the years 2006 and 2010, the distribution of the _data_value_ for responses (“Poor” to “Excellent”) among locations in New York State. The plot shows smililar distribution of _data_value_ for responses among locations in NY locations. In `2006`, `Good` and `Very good` responses are high in terms of mean `data value`. In `2010`, `Very good` response has the highest mean `data value`.
+
+# Problem 3
