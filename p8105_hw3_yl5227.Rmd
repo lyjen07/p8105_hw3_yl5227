@@ -275,3 +275,56 @@ df_merged =
 ```
 
 The `df_merged` merges `df_nhanes_covar` and `df_nhanes_accel` dataframes. It has `r nrow(df_merged)` rows and `r ncol(df_merged)` columns. 
+
+*Produce a reader-friendly table for the number of men and women in each education category, and create a visualization of the age distributions for men and women in each education category. Comment on these items.*
+
+```{r}
+sex_ed =
+  df_merged |> 
+  select(sex, education, seqn) |>   
+  group_by(sex, education) |> 
+  distinct(seqn) |> 
+  summarize(freq = n(), .groups = "drop") |> 
+  pivot_wider(names_from = sex, values_from = freq) |> 
+  knitr::kable()
+
+print(sex_ed)
+```
+
+The above table `sex_ed` shows the number of men and women in each education category.The table shows that there's basically no gender difference within the same education level. Also, more people had the education with `more than high school` than in `high school equivalent` and `less than high school`.
+
+
+Visualization of the age distributions for men and women in each education category
+
+```{r}
+age_distribution = 
+  df_merged |> 
+  ggplot(aes(x = age, fill = sex)) +
+  geom_histogram(position = "identity", alpha = 0.7, bins = 5) +
+  facet_grid(sex ~ education) +
+  labs(
+    title = "Age Distributions for men and women in each education category",
+    x = "Age",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+print(age_distribution)
+```
+
+The dataset highlights gender-specific patterns in education and age. Females slightly outnumber males with less than a high school education, while more males than females have a high school equivalent education. For those with education exceeding high school, there are slightly more females than males. Age-wise, men with less than high school education skew younger, high school equivalent education is bimodal, and education exceeding high school is uniformly distributed. Among women, less than high school education exhibits a uniform age distribution, high school equivalent education is left-skewed, and education exceeding high school is right-skewed, indicating varying age concentrations.
+
+
+*Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. Comment on your plot.*
+
+```{r}
+
+```
+
+
+*Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.*
+
+```{r}
+
+```
+
