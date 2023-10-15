@@ -8,7 +8,6 @@ output: github_document
 ```{r setup, include=FALSE}
 
 library(tidyverse)
-library(ggridges)
 library(patchwork)
 
 knitr::opts_chunk$set(
@@ -225,3 +224,54 @@ ny_2006_2010
 `ny_2006_2010` is a plot that contains `brfss` that filters out only New York and years _2006_ or _2010_ data values. The above is a two panel plot showing, for the years 2006 and 2010, the distribution of the _data_value_ for responses (“Poor” to “Excellent”) among locations in New York State. The plot shows smililar distribution of _data_value_ for responses among locations in NY locations. In `2006`, `Good` and `Very good` responses are high in terms of mean `data value`. In `2010`, `Very good` response has the highest mean `data value`.
 
 # Problem 3
+
+Import dataset `nhanes_accel.csv` and `nhanes_covar.csv`, and clean variable names of these datasets.
+
+```{r}
+df_nhanes_accel =
+  read_csv("data/nhanes_accel.csv") |> 
+  janitor::clean_names()
+
+df_nhanes_covar =
+  read_csv("data/nhanes_covar.csv", skip = 4) |> 
+  janitor::clean_names()
+```
+
+Data wrangling of `df_nhanes_covar` and `df_nhanes_accel`. 
+
+*   Recode sex and education.
+
+*   Change sex and education to factor variables. 
+
+```{r}
+df_nhanes_covar =
+df_nhanes_covar |> 
+  mutate(sex = case_match( sex,
+        1 ~ "Male",
+        2 ~ "Female"),
+    education = case_match(education,
+        1 ~ "less than high school",
+        2 ~ "high school equivalent",
+        3 ~ "more than high school"),
+    education = as.factor(education),
+    sex = as.factor(sex),)
+
+df_nhanes_accel =
+  df_nhanes_accel |> 
+  pivot_longer(
+    min1:min1440,
+    names_prefix = "min",
+    names_to = "time_minute",
+    values_to = "mims_value")
+```
+
+Merge `df_nhanes_covar` and `df_nhanes_accel` and clean merged dataset. Filter out participants that are under 21 and exclude NAs.
+
+```{r}
+df_merged =
+  merge(df_nhanes_covar, df_nhanes_accel, by = "seqn") |> 
+  filter(age >= 21) |> 
+  drop_na()
+```
+
+The `df_merged` merges `df_nhanes_covar` and `df_nhanes_accel` dataframes. It has `r nrow(df_merged)` rows and `r ncol(df_merged)` columns. 
