@@ -111,4 +111,30 @@ instacart |>
 This table shows mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week.
 
 
+# Problem 2
+
+Load `BRFSS` data.
+
+```{r}
+data("brfss_smart2010")
+
+brfss = as_tibble(brfss_smart2010)
+```
+
+
+Clean this dataset
+
+*   Use `janitor::clean_names()` to clean the variable names
+
+*   Use `filter()` to subset the data of "Overall Health" topic
+
+*   Order `response` variable from _Poor_ to _Excellent_
+
+```{r}
+brfss =
+  brfss |> 
+  janitor::clean_names() |> 
+  filter(topic == "Overall Health") |> 
+  mutate(response = fct_relevel(response, "Poor", "Fair", "Good", "Very good", "Excellent"))
+```
 
